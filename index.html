@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b2a">
+  <meta name="description" content="FreshTag 2.0 — công cụ hỗ trợ đọc màu nhãn chỉ thị anthocyanin trong nghiên cứu bao bì thực phẩm thông minh.">
+  <title>FreshTag 2.0 | SmartBio-Film</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="FreshTag 2.0 trang chủ">
+        <span class="brand-mark">F<span>+</span></span>
+        <span><strong>FreshTag</strong><small>THE EDIBLE SMARTBIO-FILM</small></span>
+      </a>
+      <nav aria-label="Điều hướng chính">
+        <a href="#scanner">Phân tích màu</a><a href="#how">Cách hoạt động</a><a href="#science">Cơ sở khoa học</a>
+      </nav>
+      <span class="version-pill"><i></i> RESEARCH PREVIEW · 2.0</span>
+    </header>
+
+    <main id="home">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-line"></span> SMART FOOD PACKAGING · ANTHOCYANIN</div>
+          <h1>Nhìn thấy sự thay đổi.<br><em>Đọc hiểu tín hiệu.</em></h1>
+          <p>FreshTag 2.0 hỗ trợ ghi nhận và phân tích màu sắc của vùng chỉ thị anthocyanin trên nhãn sinh học — hướng đến trải nghiệm theo dõi trực quan, dễ tiếp cận hơn.</p>
+          <div class="hero-actions"><a class="btn btn-light" href="#scanner">Bắt đầu phân tích <span>↗</span></a><a class="text-link" href="#science">Khám phá dự án <span>↓</span></a></div>
+          <div class="hero-foot"><span class="pulse"></span> NGUYÊN MẪU NGHIÊN CỨU HỌC SINH</div>
+        </div>
+        <div class="hero-art" aria-label="Minh họa nhãn chỉ thị màu FreshTag">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="film-card"><div class="film-top"><span>FRESHTAG / INDICATOR</span><span>01 — 03</span></div><div class="film-window"><div class="film-gradient"></div><div class="film-gloss"></div></div><div class="film-bottom"><span>ANTHOCYANIN</span><strong>COLOR RESPONSE</strong></div></div>
+          <div class="float-note note-top"><span class="note-dot purple"></span> pH-responsive pigment</div>
+          <div class="float-note note-bottom"><span class="note-dot mint"></span> Visual color reading</div>
+          <span class="hero-index">FIG. 01 / SMART LABEL</span>
+        </div>
+      </section>
+
+      <section class="stats-strip" aria-label="Thông tin dự án">
+        <div><span class="stat-label">CHẤT CHỈ THỊ</span><strong>Anthocyanin</strong><small>Chiết xuất từ bắp cải tím</small></div>
+        <div><span class="stat-label">ĐỐI TƯỢNG ĐỊNH HƯỚNG</span><strong>4 nhóm thực phẩm</strong><small>Thịt · Cá · Hải sản · Gia cầm</small></div>
+        <div><span class="stat-label">CÔNG CỤ</span><strong>Image color analysis</strong><small>Đo màu ảnh, không kết luận độ an toàn</small></div>
+      </section>
+
+      <section class="section scanner-section" id="scanner">
+        <div class="section-heading"><div><div class="eyebrow dark"><span class="eyebrow-line"></span> FRESHTAG COLOR LAB</div><h2>Phân tích <em>màu chỉ thị</em></h2></div><p>Tải ảnh hoặc dùng camera để lấy mẫu màu. Để kết quả có ý nghĩa so sánh, hãy chụp trong điều kiện ánh sáng ổn định.</p></div>
+        <div class="lab-grid">
+          <div class="panel capture-panel">
+            <div class="panel-head"><div><span class="step-number">01</span><h3>Ảnh nhãn chỉ thị</h3></div><span class="live-tag"><i></i> LOCAL PROCESSING</span></div>
+            <div class="upload-zone" id="dropZone">
+              <input id="photoInput" type="file" accept="image/*" capture="environment" hidden>
+              <div id="emptyState" class="empty-state"><div class="upload-icon">＋</div><strong>Thêm ảnh FreshTag</strong><span>Chụp ảnh mới hoặc chọn ảnh từ thiết bị</span><button class="btn btn-dark" id="choosePhoto" type="button">Chọn ảnh</button><small>JPG, PNG, WEBP · Xử lý ngay trên thiết bị</small></div>
+              <div id="previewWrap" class="preview-wrap" hidden><img id="preview" alt="Ảnh nhãn FreshTag được chọn"><div class="sample-guide"><span></span></div><div class="guide-caption">VÙNG LẤY MẪU Ở TÂM ẢNH</div></div>
+            </div>
+            <div class="capture-actions"><button class="btn btn-dark" id="analyzeBtn" type="button" disabled>Phân tích vùng màu <span>↗</span></button><button class="btn btn-outline" id="clearBtn" type="button" disabled>Xóa ảnh</button></div>
+            <p class="helper-text" id="fileStatus" aria-live="polite">Chưa có ảnh. Đặt vùng chỉ thị gần tâm ảnh, tránh bóng và ánh sáng màu.</p>
+            <div class="reference-box"><div><strong>Ảnh tham chiếu (không bắt buộc)</strong><span>So sánh màu hiện tại với mẫu ban đầu do bạn cung cấp.</span></div><label class="reference-button" for="referenceInput">＋ Thêm ảnh<input id="referenceInput" type="file" accept="image/*" hidden></label></div>
+            <div class="reference-status" id="referenceStatus">Chưa có ảnh tham chiếu.</div>
+          </div>
+
+          <div class="panel result-panel" aria-live="polite">
+            <div class="panel-head"><div><span class="step-number">02</span><h3>Kết quả đọc màu</h3></div><span class="result-state" id="resultState">ĐANG CHỜ ẢNH</span></div>
+            <div class="result-main"><div class="color-swatch" id="colorSwatch"><span>—</span></div><div><span class="result-overline">MÀU GHI NHẬN</span><h4 id="colorName">Chưa có dữ liệu</h4><p id="colorHex">HEX — — —</p></div></div>
+            <div class="metric-grid"><div class="metric"><span>RED</span><strong id="redValue">—</strong></div><div class="metric"><span>GREEN</span><strong id="greenValue">—</strong></div><div class="metric"><span>BLUE</span><strong id="blueValue">—</strong></div></div>
+            <div class="compare-result" id="compareResult"><span class="compare-icon">↔</span><div><strong>Chưa có phép so sánh</strong><p>Thêm ảnh tham chiếu để xem mức chênh lệch màu giữa hai ảnh.</p></div></div>
+            <div class="plain-language"><span class="access-icon">Aa</span><div><strong>Mô tả bằng văn bản</strong><p id="plainDescription">Kết quả màu sẽ được diễn giải tại đây, không chỉ thể hiện bằng ô màu.</p></div><button id="speakBtn" class="icon-button" type="button" aria-label="Đọc kết quả thành tiếng" title="Đọc kết quả">◖))</button></div>
+            <div class="result-actions"><button id="downloadBtn" class="btn btn-outline" type="button" disabled>Tải báo cáo màu ↓</button><button id="stopSpeakBtn" class="text-button" type="button">Dừng đọc</button></div>
+          </div>
+        </div>
+        <div class="safety-note"><span class="safety-symbol">!</span><p><strong>Giới hạn quan trọng:</strong> công cụ chỉ đo và mô tả màu của ảnh chụp. Chênh lệch màu không đồng nghĩa với thực phẩm đã hỏng hoặc còn an toàn. Không dùng kết quả này để quyết định ăn hay bỏ thực phẩm. Ngưỡng cảnh báo chỉ được xây dựng sau khi có hiệu chuẩn và kiểm nghiệm độc lập.</p></div>
+      </section>
+
+      <section class="section how-section" id="how"><div class="section-heading"><div><div class="eyebrow dark"><span class="eyebrow-line"></span> SIMPLE WORKFLOW</div><h2>Ba bước để <em>đọc tín hiệu</em></h2></div><p>Quy trình được thiết kế đơn giản, ưu tiên khả năng tiếp cận và khả năng lặp lại khi chụp ảnh.</p></div>
+        <div class="steps-grid"><article class="step-card"><span>01</span><div class="step-illustration upload-illus">↑</div><h3>Chụp hoặc tải ảnh</h3><p>Đưa vùng chỉ thị vào gần tâm khung hình, dùng ánh sáng trắng và hạn chế phản chiếu.</p></article><article class="step-card"><span>02</span><div class="step-illustration scan-illus">◉</div><h3>Đọc vùng màu</h3><p>Hệ thống lấy mẫu vùng trung tâm, tính giá trị RGB và quy đổi thành mã màu HEX.</p></article><article class="step-card"><span>03</span><div class="step-illustration read-illus">Aa</div><h3>Đọc kết quả</h3><p>Xem mô tả màu bằng chữ, nghe đọc kết quả hoặc tải báo cáo để lưu dữ liệu.</p></article></div>
+      </section>
+
+      <section class="science-section" id="science"><div class="science-copy"><div class="eyebrow"><span class="eyebrow-line"></span> THE SCIENCE BEHIND</div><h2>Từ sắc tố tự nhiên<br>đến <em>bao bì thông minh.</em></h2><p>Anthocyanin là nhóm sắc tố thực vật có thể thay đổi trạng thái màu theo điều kiện pH. FreshTag nghiên cứu việc khai thác đặc tính này trong một vùng chỉ thị tích hợp với hệ bao bì sinh học.</p><div class="science-tags"><span>CHITOSAN</span><span>MODIFIED STARCH</span><span>GLYCEROL</span><span>ANTHOCYANIN</span></div></div><div class="science-visual"><div class="ph-card"><span>COLOR RESPONSE</span><div class="ph-spectrum"><i></i><i></i><i></i><i></i><i></i></div><div class="ph-labels"><span>ACIDIC</span><span>NEUTRAL</span><span>ALKALINE</span></div><small>Minh họa phổ màu — không phải thang hiệu chuẩn FreshTag</small></div><div class="science-caption">FIG. 02 · NATURAL PIGMENT</div></div></section>
+
+      <section class="closing-banner"><div><span class="eyebrow"><span class="eyebrow-line"></span> RESEARCH WITH PURPOSE</span><h2>Đổi mới bao bì.<br><em>Minh bạch tín hiệu.</em></h2></div><p>FreshTag 2.0 là nguyên mẫu phục vụ học tập và nghiên cứu KHKT. Dữ liệu đo màu cần được đối chiếu với thực nghiệm và kiểm nghiệm độc lập trước khi ứng dụng thực tế.</p><a href="#scanner" class="round-link" aria-label="Quay lại công cụ phân tích">↑</a></section>
+    </main>
+    <footer><a class="brand footer-brand" href="#home"><span class="brand-mark">F<span>+</span></span><span><strong>FreshTag</strong><small>THE EDIBLE SMARTBIO-FILM</small></span></a><span>© 2026 · STUDENT SCIENCE & ENGINEERING PROJECT</span><span>BUILT FOR ACCESSIBILITY</span></footer>
+  </div>
+  <canvas id="workCanvas" hidden></canvas>
+  <script src="app.js" defer></script>
+</body>
+</html>

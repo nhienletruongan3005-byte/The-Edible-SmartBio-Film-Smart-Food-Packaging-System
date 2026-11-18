@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#5b3da5">
+<title>FreshTag Access — Đọc màu dễ tiếp cận</title>
+<style>
+:root{--ink:#20243a;--muted:#626b80;--purple:#5b3da5;--line:#dfe3ec;--soft:#f6f4fb;--green:#eaf7f0}
+*{box-sizing:border-box}body{margin:0;background:#f5f6fa;color:var(--ink);font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:850px;margin:auto;padding:20px 14px 40px}.hero{padding:28px 24px;border-radius:24px;background:linear-gradient(125deg,#efe7ff,#e8f8ef);margin-bottom:16px}
+.eyebrow{font-size:.78rem;font-weight:800;letter-spacing:.09em}.pill{display:inline-block;padding:4px 9px;border-radius:8px;background:#e6dcff;color:#442584;font-size:.75rem;font-weight:800}
+h1{font-size:clamp(1.8rem,5vw,2.7rem);line-height:1.1;margin:14px 0 10px}h2{font-size:1.18rem;margin:0 0 8px}p{margin:0 0 12px}.muted{color:var(--muted);font-size:.92rem}
+.card{background:white;border:1px solid var(--line);border-radius:18px;padding:20px;margin:14px 0}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+button{font:inherit;font-weight:700;border-radius:12px;padding:11px 15px;cursor:pointer;border:1px solid #cbd0dc;background:white;color:var(--ink)}
+button.primary{background:var(--purple);color:white;border-color:var(--purple)}button:focus-visible,input:focus-visible{outline:3px solid #f59e0b;outline-offset:3px}
+input[type=file]{display:block;width:100%;margin:8px 0 14px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+#preview{display:block;max-width:100%;max-height:330px;margin:10px auto;border-radius:12px;border:1px solid var(--line)}.hidden{display:none!important}
+.resultbox{background:#f8f9fc;border:1px solid var(--line);padding:14px;border-radius:13px;margin:12px 0}.colorrow{display:flex;gap:12px;align-items:center}.swatch{width:46px;height:46px;border:1px solid #cbd0dc;border-radius:10px;flex-shrink:0;background:#e2e8f0}
+.examples{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.example{border:1px solid var(--line);border-radius:12px;padding:12px}.notice{background:#fff5e9;border:1px solid #f4d5ac;padding:15px;border-radius:14px;font-size:.91rem}
+footer{color:var(--muted);font-size:.82rem;text-align:center;margin-top:20px}
+@media(max-width:520px){.examples{grid-template-columns:1fr}.hero{padding:22px 18px}.card{padding:16px}}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+  <div class="eyebrow">FRESHTAG ACCESS <span class="pill">BẢN THỬ NGHIỆM</span></div>
+  <h1>Đọc màu.<br>Hiểu tín hiệu.</h1>
+  <p>Website hỗ trợ người mù màu và người khó phân biệt màu đọc nhãn chỉ thị bằng chữ viết và giọng nói.</p>
+  <p class="muted">Thiết kế ưu tiên chữ rõ, mô tả bằng văn bản và không chỉ dựa vào màu sắc.</p>
+</header>
+<section class="card" aria-labelledby="scan-title">
+  <h2 id="scan-title">01 · Quét nhãn FreshTag</h2>
+  <p class="muted">Chụp hoặc chọn ảnh nhãn. Đặt nhãn gần giữa ảnh, dùng ánh sáng trắng và tránh bóng/loá.</p>
+  <label for="photo"><strong>Chọn ảnh nhãn chỉ thị</strong></label>
+  <input id="photo" type="file" accept="image/*" capture="environment">
+  <img id="preview" class="hidden" alt="Ảnh nhãn chỉ thị đã chọn">
+  <p id="error" role="alert" style="color:#a32020"></p>
+  <div class="actions"><button id="scan" class="primary" type="button">Phân tích màu nhãn</button><button id="reset" type="button">Xóa ảnh</button></div>
+</section>
+<section class="card" aria-live="polite">
+  <h2>02 · Kết quả dễ tiếp cận</h2>
+  <div class="resultbox">
+    <div class="colorrow"><div id="swatch" class="swatch" aria-hidden="true"></div><div><div class="muted">Màu đo được ở vùng giữa ảnh</div><strong id="colorname">Chưa có ảnh để phân tích</strong><div id="rgb" class="muted">RGB — · HEX —</div></div></div>
+  </div>
+  <div id="result" class="resultbox"><strong>Chưa có kết quả</strong><p>Chọn ảnh nhãn rồi nhấn “Phân tích màu nhãn”.</p></div>
+  <div class="actions"><button id="speak" type="button">🔊 Đọc kết quả</button><button id="stop" type="button">Dừng giọng nói</button></div>
+</section>
+<section class="card">
+  <h2>03 · Bảng tín hiệu minh họa</h2>
+  <p class="muted">Các mẫu dưới đây chỉ minh họa cách diễn đạt màu cho người khó phân biệt màu; chưa phải thang màu FreshTag đã kiểm nghiệm.</p>
+  <div class="examples">
+    <div class="example"><div class="colorrow"><div class="swatch" style="background:#8b5e9b"></div><strong>Mẫu A</strong></div><p><strong>Màu tím</strong></p><p class="muted">Màu tham chiếu ban đầu</p></div>
+    <div class="example"><div class="colorrow"><div class="swatch" style="background:#477cb8"></div><strong>Mẫu B</strong></div><p><strong>Xanh lam</strong></p><p class="muted">Có thay đổi màu</p></div>
+    <div class="example"><div class="colorrow"><div class="swatch" style="background:#b6a83d"></div><strong>Mẫu C</strong></div><p><strong>Vàng lục</strong></p><p class="muted">Có thay đổi màu rõ</p></div>
+  </div>
+</section>
+<section class="notice">
+  <strong>⚠️ Lưu ý an toàn thực phẩm</strong>
+  <p>Phiên bản này chỉ phân tích màu ảnh, chưa xác định thực phẩm còn tươi hay đã hỏng. Kết quả phụ thuộc ánh sáng, camera và vị trí lấy mẫu. Không dùng kết quả này để quyết định ăn thực phẩm. Muốn cảnh báo độ tươi, nhãn cần được hiệu chuẩn và kiểm chứng bằng chỉ tiêu độc lập.</p>
+</section>
+<footer>FreshTag Access · Nguyên mẫu học tập và nghiên cứu KHKT</footer>
+<canvas id="canvas" class="hidden"></canvas>
+</main>
+<script>
+(() => {
+ const file=document.getElementById('photo'),preview=document.getElementById('preview'),error=document.getElementById('error'),swatch=document.getElementById('swatch'),colorname=document.getElementById('colorname'),rgbout=document.getElementById('rgb'),result=document.getElementById('result'),canvas=document.getElementById('canvas');
+ let ready=false,lastText='Chưa có kết quả.';
+ function nameColor(r,g,b){
+   let R=r/255,G=g/255,B=b/255,mx=Math.max(R,G,B),mn=Math.min(R,G,B),d=mx-mn,h=0,s=mx===0?0:d/mx,v=mx;
+   if(d){if(mx===R)h=60*(((G-B)/d)%6);else if(mx===G)h=60*((B-R)/d+2);else h=60*((R-G)/d+4);if(h<0)h+=360}
+   if(v<.19)return 'Tối / gần đen';if(s<.16)return v>.82?'Trắng / rất nhạt':v<.42?'Xám đậm':'Xám';
+   if(h<15||h>=345)return 'Đỏ';if(h<40)return 'Cam';if(h<68)return 'Vàng';if(h<165)return 'Xanh lục';if(h<205)return 'Xanh ngọc';if(h<255)return 'Xanh lam';if(h<290)return 'Tím';return 'Hồng / tím đỏ';
+ }
+ file.addEventListener('change',()=>{error.textContent='';const f=file.files&&file.files[0];ready=false;if(!f){preview.classList.add('hidden');return}if(!f.type.startsWith('image/')){error.textContent='Vui lòng chọn tệp ảnh.';return}const url=URL.createObjectURL(f);preview.onload=()=>{ready=true;preview.classList.remove('hidden');URL.revokeObjectURL(url)};preview.onerror=()=>{error.textContent='Không mở được ảnh này. Hãy thử ảnh khác.';URL.revokeObjectURL(url)};preview.src=url});
+ document.getElementById('scan').addEventListener('click',()=>{error.textContent='';if(!ready){error.textContent='Trước tiên hãy chụp hoặc chọn ảnh nhãn.';return}try{const ctx=canvas.getContext('2d',{willReadFrequently:true}),scale=Math.min(1,500/Math.max(preview.naturalWidth,preview.naturalHeight));canvas.width=Math.max(1,Math.round(preview.naturalWidth*scale));canvas.height=Math.max(1,Math.round(preview.naturalHeight*scale));ctx.drawImage(preview,0,0,canvas.width,canvas.height);const x=Math.floor(canvas.width/2),y=Math.floor(canvas.height/2),rad=Math.max(2,Math.floor(Math.min(canvas.width,canvas.height)*.025)),w=Math.min(canvas.width-x+rad,rad*2+1),h=Math.min(canvas.height-y+rad,rad*2+1),data=ctx.getImageData(Math.max(0,x-rad),Math.max(0,y-rad),w,h).data;let rr=0,gg=0,bb=0,n=0;for(let i=0;i<data.length;i+=4){if(data[i+3]<100)continue;rr+=data[i];gg+=data[i+1];bb+=data[i+2];n++}if(!n)throw Error('Không đọc được vùng màu.');const r=Math.round(rr/n),g=Math.round(gg/n),b=Math.round(bb/n),hex='#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join(''),cn=nameColor(r,g,b);swatch.style.background=hex;colorname.textContent=cn;rgbout.textContent=`RGB ${r}, ${g}, ${b} · HEX ${hex}`;result.innerHTML='<strong>Đã đo màu ảnh</strong><p>Màu vùng giữa ảnh được phân loại là <strong>'+cn+'</strong>.</p><p>Đây là mô tả màu của ảnh chụp, không phải kết luận độ tươi của thực phẩm.</p>';lastText=`Màu vùng giữa ảnh là ${cn}. Giá trị RGB là ${r}, ${g}, ${b}. Đây chỉ là kết quả phân tích màu ảnh, chưa xác định độ tươi hoặc độ an toàn của thực phẩm.`}catch(e){error.textContent=e.message||'Có lỗi khi phân tích ảnh.'}});
+ document.getElementById('speak').addEventListener('click',()=>{if(!('speechSynthesis'in window)){error.textContent='Trình duyệt này chưa hỗ trợ đọc thành tiếng.';return}speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(lastText);utterance.lang='vi-VN';speechSynthesis.speak(utterance)});
+ document.getElementById('stop').addEventListener('click',()=>{if('speechSynthesis'in window)speechSynthesis.cancel()});
+ document.getElementById('reset').addEventListener('click',()=>{file.value='';ready=false;preview.removeAttribute('src');preview.classList.add('hidden');error.textContent='';swatch.style.background='#e2e8f0';colorname.textContent='Chưa có ảnh để phân tích';rgbout.textContent='RGB — · HEX —';result.innerHTML='<strong>Chưa có kết quả</strong><p>Chọn ảnh nhãn rồi nhấn “Phân tích màu nhãn”.</p>';lastText='Chưa có kết quả.';if('speechSynthesis'in window)speechSynthesis.cancel()});
+})();
+</script>
+</body>
+</html>
