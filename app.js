@@ -60,6 +60,7 @@
     $('plainDescription').textContent=`Ảnh có màu ${result.name.toLowerCase()}, mã HEX ${result.hex.toUpperCase()}. Đây là kết quả đo màu vùng trung tâm, không phải kết luận về chất lượng thực phẩm.`;
     $('downloadBtn').disabled=false;
     renderComparison();
+    renderInterpretation();
   }
   function renderComparison() {
     const box=$('compareResult');
@@ -68,6 +69,84 @@
     box.innerHTML=`<span class="compare-icon">Δ</span><div><strong>Độ chênh màu CIE76: ${d.toFixed(1)}</strong><p>So với ảnh tham chiếu (${referenceResult.hex.toUpperCase()}). Chỉ là khác biệt màu ảnh, không phải ngưỡng độ tươi.</p></div>`;
     lastSpoken += ` Độ chênh màu so với ảnh tham chiếu là ${d.toFixed(1)} theo công thức CIE76.`;
   }
+  function selectedMode() { return document.querySelector('input[name="analysisMode"]:checked')?.value || 'calibrated'; }
+  function hexToRgb(value) {
+    const match = /^#?([0-9a-f]{6})$/i.exec((value || '').trim());
+    if (!match) return null;
+    const n = parseInt(match[1], 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function interpretationMarkup(level, title, detail, delta, source) {
+    const deltaText = Number.isFinite(delta) ? `Độ lệch màu ΔE (CIE76): ${delta.toFixed(1)}.` : '';
+    const sourceText = source === 'demo' ? ' Đây là kịch bản mô phỏng, không dựa trên ảnh tag.' : ' Đây là phân loại độ lệch màu theo thông số người dùng nhập.';
+    $('interpretationOutput').dataset.level = level;
+    $('interpretationOutput').innerHTML = `<span class="interpretation-icon">${level === 'reference' ? '✓' : level === 'changed' ? '!' : '↗'}</span><div><strong>${title}</strong><p>${detail} ${deltaText}${sourceText} Không phải kết luận về độ tươi hoặc an toàn thực phẩm.</p></div>`;
+    const food = $('foodType')?.value || 'thực phẩm';
+    lastSpoken += ` Diễn giải FreshTag cho nhóm ${food}: ${title}. ${detail} Đây không phải kết luận an toàn thực phẩm.`;
+    return {level, title, detail, deltaE: Number.isFinite(delta) ? Number(delta.toFixed(2)) : null, source};
+  }
+  let latestInterpretation = null;
+  function renderInterpretation() {
+    if (!currentResult) {
+      $('interpretationOutput').dataset.level = '';
+      $('interpretationOutput').innerHTML = '<span class="interpretation-icon">i</span><div><strong>Chưa có dữ liệu diễn giải</strong><p>Chọn chế độ và phân tích ảnh tag để xem kết quả đối chiếu.</p></div>';
+      latestInterpretation = null;
+      return;
+    }
+    if (selectedMode() === 'demo') { runDemoScenario(); return; }
+    const baseline = hexToRgb($('baselineHex').value);
+    const t1 = Number($('thresholdOne').value), t2 = Number($('thresholdTwo').value);
+    if (!baseline) {
+      latestInterpretation = interpretationMarkup('changed','Màu mốc không hợp lệ','Hãy nhập mã HEX gồm 6 ký tự, ví dụ #9C719B.',NaN,'calibrated');
+      renderRecommendation(); return;
+    }
+    if (!(t1 > 0 && t2 > t1)) {
+      latestInterpretation = interpretationMarkup('changed','Ngưỡng chưa hợp lệ','Ngưỡng thay đổi mạnh phải lớn hơn ngưỡng thay đổi nhẹ và cả hai phải lớn hơn 0.',NaN,'calibrated');
+      renderRecommendation(); return;
+    }
+    const d = deltaE(currentResult.lab, rgbToLab(...baseline));
+    if (d <= t1) latestInterpretation = interpretationMarkup('reference','Tín hiệu gần màu mốc tham chiếu',`Màu đo được nằm trong ngưỡng ΔE ≤ ${t1}.` ,d,'calibrated');
+    else if (d <= t2) latestInterpretation = interpretationMarkup('changed','Tín hiệu có thay đổi màu',`Màu đo được vượt ngưỡng nhẹ ${t1} nhưng chưa vượt ngưỡng mạnh ${t2}.`,d,'calibrated');
+    else latestInterpretation = interpretationMarkup('strong','Tín hiệu thay đổi màu mạnh',`Màu đo được vượt ngưỡng ΔE ${t2}; cần kiểm tra lại điều kiện chụp và đối chiếu thực nghiệm.`,d,'calibrated');
+    renderRecommendation();
+  }
+  function renderRecommendation() {
+    const out = $('recommendationOutput'); if (!out) return;
+    if (!currentResult || !latestInterpretation) { out.innerHTML='<strong>CHƯA ĐỦ CƠ SỞ ĐÁNH GIÁ</strong><p>Hãy phân tích màu tag để xem đánh giá tín hiệu. Chưa thể xác nhận thực phẩm phù hợp để sử dụng.</p>'; return; }
+    const validated = $('validationStatus')?.value === 'validated';
+    const level = latestInterpretation.level;
+    const food = $('foodType')?.value || 'thực phẩm';
+    if (!validated) {
+      out.innerHTML=`<strong>CHƯA ĐỦ CƠ SỞ XÁC NHẬN PHÙ HỢP ĐỂ SỬ DỤNG</strong><p>Với nhóm ${food.toLowerCase()}, FreshTag ghi nhận: <b>${latestInterpretation.title}</b>. Tuy nhiên, ngưỡng hiện tại chưa được xác nhận bằng kiểm nghiệm độc lập. Không dùng kết quả này để quyết định ăn hay bỏ thực phẩm.</p>`;
+    } else if (level === 'reference') {
+      out.innerHTML=`<strong>TÍN HIỆU NẰM TRONG KHOẢNG THAM CHIẾU ĐÃ KIỂM NGHIỆM</strong><p>Đối với nhóm ${food.toLowerCase()}, màu tag nằm trong khoảng tham chiếu đã được nhóm nghiên cứu xác nhận. Đây chỉ là kết quả sàng lọc trong phạm vi quy trình kiểm nghiệm; không phải bảo đảm thực phẩm an toàn tuyệt đối.</p>`;
+    } else {
+      out.innerHTML=`<strong>CHƯA NÊN KẾT LUẬN PHÙ HỢP ĐỂ SỬ DỤNG</strong><p>Tín hiệu màu của nhóm ${food.toLowerCase()} đã thay đổi so với mốc tham chiếu. Cần kiểm tra lại mẫu và đối chiếu các chỉ tiêu kiểm nghiệm; không nên dựa vào riêng kết quả màu để xác nhận sử dụng.</p>`;
+    }
+  }
+  function runDemoScenario() {
+    const scenario = $('demoScenario').value;
+    const demo = {
+      reference: {level:'reference',title:'Mô phỏng: tín hiệu gần màu mốc',detail:'Kịch bản minh họa mức lệch màu thấp.',delta:2},
+      changed: {level:'changed',title:'Mô phỏng: tín hiệu thay đổi vừa',detail:'Kịch bản minh họa mức lệch màu trung bình.',delta:11},
+      strong: {level:'strong',title:'Mô phỏng: tín hiệu thay đổi mạnh',detail:'Kịch bản minh họa mức lệch màu cao.',delta:24}
+    }[scenario];
+    latestInterpretation = interpretationMarkup(demo.level,demo.title,demo.detail,demo.delta,'demo');
+    renderRecommendation();
+  }
+  document.querySelectorAll('input[name="analysisMode"]').forEach(input => input.addEventListener('change', () => {
+    const demo = selectedMode() === 'demo';
+    $('calibrationControls').hidden = demo;
+    $('demoControls').hidden = !demo;
+    $('runDemoBtn').hidden = !demo;
+    if (currentResult) renderInterpretation();
+  }));
+  ['foodType','baselineHex','thresholdOne','thresholdTwo'].forEach(id => $(id).addEventListener('change', () => { if (currentResult && selectedMode() === 'calibrated') renderInterpretation(); }));
+  $('validationStatus').addEventListener('change', renderRecommendation);
+  $('demoScenario').addEventListener('change', () => { if (selectedMode() === 'demo') runDemoScenario(); });
+  $('runDemoBtn').addEventListener('click', () => { document.querySelector('input[name="analysisMode"][value="demo"]').checked = true; $('calibrationControls').hidden = true; $('demoControls').hidden = false; runDemoScenario(); });
+  $('resetCalibrationBtn').addEventListener('click', () => { $('baselineHex').value='#9C719B'; $('thresholdOne').value='8'; $('thresholdTwo').value='18'; if(currentResult && selectedMode()==='calibrated')renderInterpretation(); });
+
   $('choosePhoto').addEventListener('click',()=>photoInput.click());
   photoInput.addEventListener('change',async()=>{
     const file=photoInput.files?.[0]; if(!file)return;
@@ -95,7 +174,7 @@
   $('stopSpeakBtn').addEventListener('click',()=>{if('speechSynthesis'in window)speechSynthesis.cancel();});
   $('downloadBtn').addEventListener('click',()=>{
     if(!currentResult)return;
-    const report={project:'FreshTag 2.0 — The Edible SmartBio-Film',createdAt:new Date().toISOString(),measurement:{colorName:currentResult.name,hex:currentResult.hex,rgb:{red:currentResult.rgb[0],green:currentResult.rgb[1],blue:currentResult.rgb[2]},sampling:'Median RGB from central image region'},reference:referenceResult?{colorName:referenceResult.name,hex:referenceResult.hex,deltaE_CIE76:Number(deltaE(currentResult.lab,referenceResult.lab).toFixed(2))}:null,limitation:'Image color analysis only. Not a freshness, spoilage, or food-safety determination.'};
+    const report={project:'FreshTag 2.2 — The Edible SmartBio-Film',createdAt:new Date().toISOString(),measurement:{colorName:currentResult.name,hex:currentResult.hex,rgb:{red:currentResult.rgb[0],green:currentResult.rgb[1],blue:currentResult.rgb[2]},sampling:'Median RGB from central image region'},reference:referenceResult?{colorName:referenceResult.name,hex:referenceResult.hex,deltaE_CIE76:Number(deltaE(currentResult.lab,referenceResult.lab).toFixed(2))}:null,interpretation:{mode:selectedMode(),foodType:$('foodType').value,baselineHex:$('baselineHex').value,thresholdOne:Number($('thresholdOne').value),thresholdTwo:Number($('thresholdTwo').value),result:latestInterpretation},useSuitability:{validationStatus:$('validationStatus').value,recommendation:$('recommendationOutput').innerText,warning:'This screening result does not guarantee food safety and must not replace independent laboratory testing or safe handling guidance.'},limitation:'Image color analysis is a screening signal only. It cannot detect all pathogens or independently establish whether food is safe to eat.'};
     const blob=new Blob([JSON.stringify(report,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='freshtag-color-report.json';a.click();URL.revokeObjectURL(url);
   });
   const zone=$('dropZone');['dragenter','dragover'].forEach(ev=>zone.addEventListener(ev,e=>{e.preventDefault();zone.style.borderColor='#66845f';}));['dragleave','drop'].forEach(ev=>zone.addEventListener(ev,e=>{e.preventDefault();zone.style.borderColor='';}));

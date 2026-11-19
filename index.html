@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#102b2a">
-  <meta name="description" content="FreshTag 2.0 — công cụ hỗ trợ đọc màu nhãn chỉ thị anthocyanin trong nghiên cứu bao bì thực phẩm thông minh.">
-  <title>FreshTag 2.0 | SmartBio-Film</title>
+  <meta name="description" content="FreshTag 2.1 — công cụ hỗ trợ đọc màu nhãn chỉ thị anthocyanin trong nghiên cứu bao bì thực phẩm thông minh.">
+  <title>FreshTag 2.1 | SmartBio-Film</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -18,7 +18,7 @@
       <nav aria-label="Điều hướng chính">
         <a href="#scanner">Phân tích màu</a><a href="#how">Cách hoạt động</a><a href="#science">Cơ sở khoa học</a>
       </nav>
-      <span class="version-pill"><i></i> RESEARCH PREVIEW · 2.0</span>
+      <span class="version-pill"><i></i> RESEARCH PREVIEW · 2.1</span>
     </header>
 
     <main id="home">
@@ -26,7 +26,7 @@
         <div class="hero-copy">
           <div class="eyebrow"><span class="eyebrow-line"></span> SMART FOOD PACKAGING · ANTHOCYANIN</div>
           <h1>Nhìn thấy sự thay đổi.<br><em>Đọc hiểu tín hiệu.</em></h1>
-          <p>FreshTag 2.0 hỗ trợ ghi nhận và phân tích màu sắc của vùng chỉ thị anthocyanin trên nhãn sinh học — hướng đến trải nghiệm theo dõi trực quan, dễ tiếp cận hơn.</p>
+          <p>FreshTag 2.1 hỗ trợ ghi nhận và phân tích màu sắc của vùng chỉ thị anthocyanin trên nhãn sinh học — hướng đến trải nghiệm theo dõi trực quan, dễ tiếp cận hơn.</p>
           <div class="hero-actions"><a class="btn btn-light" href="#scanner">Bắt đầu phân tích <span>↗</span></a><a class="text-link" href="#science">Khám phá dự án <span>↓</span></a></div>
           <div class="hero-foot"><span class="pulse"></span> NGUYÊN MẪU NGHIÊN CỨU HỌC SINH</div>
         </div>
@@ -70,6 +70,36 @@
             <div class="result-actions"><button id="downloadBtn" class="btn btn-outline" type="button" disabled>Tải báo cáo màu ↓</button><button id="stopSpeakBtn" class="text-button" type="button">Dừng đọc</button></div>
           </div>
         </div>
+        <section class="interpretation-panel" id="interpretation">
+          <div class="interpretation-heading"><div><div class="eyebrow dark"><span class="eyebrow-line"></span> FRESHTAG 2.1 · COLOR INTERPRETATION ENGINE</div><h3>Diễn giải <em>tín hiệu màu</em></h3></div><span class="version-pill"><i></i> TWO MODES</span></div>
+          <p class="interpretation-intro">Chọn chế độ để xem cách FreshTag chuyển dữ liệu màu thành thông tin dễ hiểu. Chế độ thực nghiệm chỉ đối chiếu với mốc và ngưỡng do nhóm nghiên cứu nhập; các ngưỡng mặc định chỉ là giá trị thử giao diện, chưa được kiểm nghiệm.</p>
+          <div class="mode-switch" role="group" aria-label="Chọn chế độ">
+            <label><input type="radio" name="analysisMode" value="calibrated" checked><span><strong>Chế độ thực nghiệm</strong><small>Đối chiếu với mốc màu và ngưỡng hiệu chuẩn</small></span></label>
+            <label><input type="radio" name="analysisMode" value="demo"><span><strong>Chế độ mô phỏng</strong><small>Trình diễn ba mức thay đổi màu giả lập</small></span></label>
+          </div>
+          <div class="calibration-controls" id="calibrationControls">
+            <label>Nhóm thực phẩm khảo sát<select id="foodType"><option value="Thịt">Thịt</option><option value="Cá">Cá</option><option value="Hải sản">Hải sản</option><option value="Gia cầm">Gia cầm</option></select></label>
+            <label>Màu mốc tham chiếu (HEX)<input id="baselineHex" type="text" value="#9C719B" maxlength="7" inputmode="text" aria-describedby="baselineHelp"></label>
+            <label>Ngưỡng thay đổi nhẹ (ΔE)<input id="thresholdOne" type="number" min="0.1" max="100" step="0.1" value="8"></label>
+            <label>Ngưỡng thay đổi mạnh (ΔE)<input id="thresholdTwo" type="number" min="0.2" max="150" step="0.1" value="18"></label>
+            <p id="baselineHelp" class="control-help">Nhập màu mốc lấy từ mẫu đối chứng của chính nhóm thực phẩm đang khảo sát. Các con số ban đầu chỉ để thử giao diện; hãy thay bằng ngưỡng có căn cứ thực nghiệm.</p>
+          </div>
+          <div class="demo-controls" id="demoControls" hidden>
+            <label>Kịch bản mô phỏng<select id="demoScenario"><option value="reference">Tín hiệu gần màu mốc (ΔE = 2)</option><option value="changed">Tín hiệu thay đổi vừa (ΔE = 11)</option><option value="strong">Tín hiệu thay đổi mạnh (ΔE = 24)</option></select></label>
+            <p class="control-help">Dữ liệu mô phỏng được tạo sẵn để minh họa giao diện, không lấy từ ảnh tag và không phản ánh tình trạng thực phẩm.</p>
+          </div>
+          <div class="interpretation-output" id="interpretationOutput" aria-live="polite">
+            <span class="interpretation-icon">i</span><div><strong>Chưa có dữ liệu diễn giải</strong><p>Chọn chế độ và phân tích ảnh tag để xem kết quả đối chiếu.</p></div>
+          </div>
+          <section class="recommendation-card" aria-live="polite">
+            <div class="recommendation-title"><span class="eyebrow dark">FRESHTAG 2.2 · USE-SUITABILITY REVIEW</span><h4>Đánh giá mức độ phù hợp để sử dụng</h4></div>
+            <div class="validation-row"><label for="validationStatus">Tình trạng xác nhận ngưỡng bằng kiểm nghiệm độc lập</label><select id="validationStatus"><option value="unvalidated" selected>Chưa có / chưa hoàn tất kiểm nghiệm</option><option value="validated">Đã có dữ liệu kiểm nghiệm độc lập cho đúng nhóm thực phẩm và quy trình</option></select></div>
+            <div class="recommendation-output" id="recommendationOutput"><strong>CHƯA ĐỦ CƠ SỞ ĐÁNH GIÁ</strong><p>Hãy phân tích màu tag. Khi chưa có dữ liệu kiểm nghiệm độc lập, FreshTag chỉ có thể mô tả tín hiệu màu và chưa thể khuyến nghị thực phẩm phù hợp để sử dụng.</p></div>
+            <p class="recommendation-footnote">Chỉ chọn “đã có dữ liệu kiểm nghiệm” khi nhóm nghiên cứu thực sự có hồ sơ đối chiếu phù hợp với loại thực phẩm, điều kiện bảo quản và mẫu tag đang dùng. Kết quả màu không thay thế hạn sử dụng, nhiệt độ bảo quản, kiểm tra cảm quan hoặc hướng dẫn an toàn thực phẩm.</p>
+          </section>
+          <div class="demo-buttons"><button type="button" class="btn btn-outline" id="runDemoBtn" hidden>Xem thử kịch bản mô phỏng</button><button type="button" class="btn btn-outline" id="resetCalibrationBtn">Khôi phục thông số thử</button></div>
+          <p class="disclaimer-mini"><strong>Không phải kết luận an toàn thực phẩm:</strong> các mức trên chỉ mô tả độ lệch màu so với mốc tham chiếu. Chúng không cho biết thực phẩm còn ăn được hay không. Muốn xây dựng cảnh báo độ tươi cần hiệu chuẩn riêng cho từng loại thực phẩm và đối chiếu với kiểm nghiệm độc lập.</p>
+        </section>
         <div class="safety-note"><span class="safety-symbol">!</span><p><strong>Giới hạn quan trọng:</strong> công cụ chỉ đo và mô tả màu của ảnh chụp. Chênh lệch màu không đồng nghĩa với thực phẩm đã hỏng hoặc còn an toàn. Không dùng kết quả này để quyết định ăn hay bỏ thực phẩm. Ngưỡng cảnh báo chỉ được xây dựng sau khi có hiệu chuẩn và kiểm nghiệm độc lập.</p></div>
       </section>
 
@@ -79,7 +109,7 @@
 
       <section class="science-section" id="science"><div class="science-copy"><div class="eyebrow"><span class="eyebrow-line"></span> THE SCIENCE BEHIND</div><h2>Từ sắc tố tự nhiên<br>đến <em>bao bì thông minh.</em></h2><p>Anthocyanin là nhóm sắc tố thực vật có thể thay đổi trạng thái màu theo điều kiện pH. FreshTag nghiên cứu việc khai thác đặc tính này trong một vùng chỉ thị tích hợp với hệ bao bì sinh học.</p><div class="science-tags"><span>CHITOSAN</span><span>MODIFIED STARCH</span><span>GLYCEROL</span><span>ANTHOCYANIN</span></div></div><div class="science-visual"><div class="ph-card"><span>COLOR RESPONSE</span><div class="ph-spectrum"><i></i><i></i><i></i><i></i><i></i></div><div class="ph-labels"><span>ACIDIC</span><span>NEUTRAL</span><span>ALKALINE</span></div><small>Minh họa phổ màu — không phải thang hiệu chuẩn FreshTag</small></div><div class="science-caption">FIG. 02 · NATURAL PIGMENT</div></div></section>
 
-      <section class="closing-banner"><div><span class="eyebrow"><span class="eyebrow-line"></span> RESEARCH WITH PURPOSE</span><h2>Đổi mới bao bì.<br><em>Minh bạch tín hiệu.</em></h2></div><p>FreshTag 2.0 là nguyên mẫu phục vụ học tập và nghiên cứu KHKT. Dữ liệu đo màu cần được đối chiếu với thực nghiệm và kiểm nghiệm độc lập trước khi ứng dụng thực tế.</p><a href="#scanner" class="round-link" aria-label="Quay lại công cụ phân tích">↑</a></section>
+      <section class="closing-banner"><div><span class="eyebrow"><span class="eyebrow-line"></span> RESEARCH WITH PURPOSE</span><h2>Đổi mới bao bì.<br><em>Minh bạch tín hiệu.</em></h2></div><p>FreshTag 2.2 là nguyên mẫu phục vụ học tập và nghiên cứu KHKT. Dữ liệu đo màu cần được đối chiếu với thực nghiệm và kiểm nghiệm độc lập trước khi ứng dụng thực tế.</p><a href="#scanner" class="round-link" aria-label="Quay lại công cụ phân tích">↑</a></section>
     </main>
     <footer><a class="brand footer-brand" href="#home"><span class="brand-mark">F<span>+</span></span><span><strong>FreshTag</strong><small>THE EDIBLE SMARTBIO-FILM</small></span></a><span>© 2026 · STUDENT SCIENCE & ENGINEERING PROJECT</span><span>BUILT FOR ACCESSIBILITY</span></footer>
   </div>
